@@ -5,9 +5,9 @@ from automationSystem import automationSystem
 
 automation_system = automationSystem()
 
-camera = securityCamera("camera", "on", "secure")
-thermostat = thermoStat("thermostat", "on", 20)
-light = smartLight("light", "on", 100)
+camera = securityCamera("Camera", "on", "secure")
+thermostat = thermoStat("Thermostat", "on", 20)
+light = smartLight("Light", "on", 100)
 
 automation_system.add_device(camera)
 automation_system.add_device(light)

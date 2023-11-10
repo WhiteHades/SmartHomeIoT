@@ -22,6 +22,12 @@ class SmartHomeGUI:
         self.thermostat_toggle = None
         self.random_motion_button = None
         self.camera_motion_status_label = None
+        self.update_light_brightness = None
+        self.update_thermostat_temperature = None
+        self.brightness_label = None
+        self.temperature_label = None
+        self.brightness_labels = []
+        self.temperature_labels = []
         self.status_frame = None
         self.status_labels = {}
 
@@ -38,7 +44,7 @@ class SmartHomeGUI:
         # Create GUI elements
         self.create_device_status_labels()
         self.create_device_controls()
-        self.create_visualization()
+        # self.create_visualization()
         self.periodic_update()
 
         # Create the real-time status update section
@@ -59,12 +65,14 @@ class SmartHomeGUI:
             if isinstance(device, thermoStat):
                 temperature_label = tk.Label(device_frame, text=f"Temperature: {device.temperature}°C")
                 temperature_label.pack()
+                self.temperature_labels.append(temperature_label)
             elif isinstance(device, securityCamera):
                 motion_status_label = tk.Label(device_frame, text=f"Security Status: {device.security_status}")
                 motion_status_label.pack()
             elif isinstance(device, smartLight):
                 brightness_label = tk.Label(device_frame, text=f"Brightness: {device.brightness}")
                 brightness_label.pack()
+                self.brightness_labels.append(brightness_label)
 
     def create_device_controls(self):
         control_frame = tk.LabelFrame(self.root, text="Controls")
@@ -72,11 +80,11 @@ class SmartHomeGUI:
 
         # Add sliders for brightness and temperature, and buttons for toggling devices
         self.light_brightness_slider = tk.Scale(control_frame, from_=0, to=100, orient="horizontal",
-                                                label="Light Brightness")
+                                                label="Brightness", command=self.update_light_brightness)
         self.light_brightness_slider.pack(side="left", padx=10, pady=5)
 
-        self.thermostat_temp_slider = tk.Scale(control_frame, from_=15, to=30, orient="horizontal",
-                                               label="Thermostat Temperature (°C)")
+        self.thermostat_temp_slider = tk.Scale(control_frame, from_=1, to=35, orient="horizontal",
+                                               label="Temperature (°C)", command=self.update_thermostat_temperature)
         self.thermostat_temp_slider.pack(side="left", padx=10, pady=5)
 
         self.camera_toggle = tk.Button(control_frame, text="Toggle Camera", command=self.toggle_camera)
@@ -144,9 +152,25 @@ class SmartHomeGUI:
             status_text = f"{device.deviceID}: Status: {device.status}"
             label.config(text=status_text)
 
-    def create_visualization(self):
-        # Placeholder for creating graphs for temperature and brightness levels
-        pass
+    def update_light_brightness(self, value):
+        # Update the light's brightness attribute
+        self.light.set_brightness(int(value))
+        # Find and update the label for light brightness
+        # for label in self.device_status_labels:
+        #     if "Brightness:" in label.cget("text"):
+        #         label.config(text=f"Brightness: {value}")
+        # Update the status in the status update section as well
+        self.status_labels["Light"].config(text=f"Brightness - {value}%")
+
+    def update_thermostat_temperature(self, value):
+        # Update the thermostat's temperature attribute
+        self.thermostat.set_temperature(int(value))
+        # Find and update the label for thermostat temperature
+        for label in self.device_status_labels:
+            if "Temperature:" in label.cget("text"):
+                label.config(text=f"Temperature: {value}°C")
+        # Update the status in the status update section as well
+        self.status_labels["Thermostat"].config(text=f"Temperature - {value}°C")
 
     def periodic_update(self):
         # Update the device status labels with the current device statuses
