@@ -2,6 +2,7 @@ from securityCamera import securityCamera
 from thermoStat import thermoStat
 from smartLight import smartLight
 
+
 class automationSystem:
     def __init__(self):
         self.devices = []
@@ -21,17 +22,17 @@ class automationSystem:
     def execute_automation_jobs(self):
         for device in self.devices:
             if isinstance(device, securityCamera):
-                if device.status == "on" and device.security_status == "alert":
-                    device.randomise_security_status()
+                if device.status == "on":
+                    device.toggle_security_status()
             elif isinstance(device, smartLight):
-                if device.status == "on" and device.brightness > 50:
-                    device.gradual_brightness(50)
+                if device.status == "on" and device.brightness > 40:
+                    device.gradual_brightness()
             elif isinstance(device, thermoStat):
-                if device.status == "on" and 68 <= device.temperature <= 72:
+                if device.status == "on" and 10 <= device.temperature <= 30:
                     device.randomise_temperature()
 
-    def simulation_loop(self, duration, interval):
-        import time
-        for i in range(duration):
-            self.execute_automation_jobs()
-            time.sleep(interval)
+    # def simulation_loop(self, duration, interval):
+    #     import time
+    #     for i in range(duration):
+    #         self.execute_automation_jobs()
+    #         time.sleep(interval)

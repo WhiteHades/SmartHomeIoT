@@ -1,16 +1,11 @@
-from securityCamera import securityCamera
-from thermoStat import thermoStat
-from smartLight import smartLight
-from automationSystem import automationSystem
+import tkinter as tk
+from SmartHomeGUI import SmartHomeGUI
 
-automation_system = automationSystem()
 
-camera = securityCamera("Camera", "on", "secure")
-thermostat = thermoStat("Thermostat", "on", 20)
-light = smartLight("Light", "on", 100)
+if __name__ == "__main__":
+    # Create the main GUI window
+    root = tk.Tk()
+    app = SmartHomeGUI(root)
 
-automation_system.add_device(camera)
-automation_system.add_device(light)
-automation_system.add_device(thermostat)
-
-automation_system.simulation_loop(10, 1)
+    # Start the main GUI loop
+    root.mainloop()
